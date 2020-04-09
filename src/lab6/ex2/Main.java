@@ -1,7 +1,6 @@
 package lab6.ex2;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -10,22 +9,41 @@ public class Main {
         User[] users = new User[100];
         int cnt = 0;
 
-        try {
-            File myObj = new File("passwords.txt");
-            Scanner myReader = new Scanner(myObj);
+        FileInputStream file = null;
+        BufferedReader reader = null;
 
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                String[] splitData = data.split(" ");
+        try {
+            file = new FileInputStream("passwords.txt");
+            reader = new BufferedReader(new InputStreamReader(file));
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String []splitData = line.split(" ");
                 users[cnt++] = new User(splitData[0], splitData[1]);
             }
-            myReader.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+            System.exit(1);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.exit(1);
+        } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
         }
 
         TreeMap<String, String> myTree = new TreeMap<>();
